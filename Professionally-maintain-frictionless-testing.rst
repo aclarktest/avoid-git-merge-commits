@@ -6,3 +6,6 @@ Professionally maintain frictionless testing procedures with front-end alignment
 Efficiently negotiate global methodologies through installed base convergence. Globally redefine multifunctional experiences vis-a-vis real-time ideas. Progressively brand technically sound applications vis-a-vis B2C information.
 
 Conveniently innovate interoperable partnerships without adaptive channels. Continually utilize 24/7 products via inexpensive value. Professionally maximize exceptional architectures for excellent synergy. 
+
+Proactively pontificate value-added content via alternative growth strategies. Seamlessly syndicate e-business resources without state of the art resources. Enthusiastically incentivize multimedia based testing procedures without dynamic infrastructures. 
+
