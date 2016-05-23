@@ -205,4 +205,6 @@ vagrant-up:
 
 # avoid-git-merge-commits
 lorem:
-	lorem --words 100 --randomize
+	@echo >> Professionally-maintain-frictionless-testing.rst
+	lorem --words 100 --randomize >> Professionally-maintain-frictionless-testing.rst
+	@echo >> Professionally-maintain-frictionless-testing.rst
