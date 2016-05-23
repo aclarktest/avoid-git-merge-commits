@@ -202,3 +202,7 @@ vagrant-init:
 	vagrant init ubuntu/trusty64; vagrant up --provider virtualbox
 vagrant-up:
 	vagrant up --provision
+
+# avoid-git-merge-commits
+lorem:
+	lorem --words 100 --randomize
