@@ -22,40 +22,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# GNU software standard targets... for inspiration.
-# https://www.gnu.org/prep/standards/html_node/Standard-Targets.html
-#TAGS
-#all
-#check
-#clean
-#distclean
-#dist
-#dvi
-#html
-#info
-#install-dvi
-#install-html
-#install-pdf
-#install-ps
-#install-strip
-#install
-#maintainer-clean
-#mostlyclean
-#pdf
-#ps
-#uninstall
+.DEFAULT_GOAL=git-commit-auto-push
 
-.DEFAULT_GOAL := git-commit-auto-push
-.PHONY := install
+APP=app
+COMMITMESSAGE="Update"
+DIR:=$(shell echo `tmp`)
+PROJECT=project
 
-# Short target names to execute default, multiple and preferred targets
 commit: git-commit-auto-push
 co: git-checkout-branches
 db: django-migrate django-su
 db-clean: django-db-clean-postgres
+fe-init: npm-init npm-install grunt-init grunt-serve
+fe: npm-install grunt-serve
+freeze: python-pip-freeze
 heroku: heroku-push
 install: python-virtualenv-create python-pip-install
 lint: python-flake python-yapf python-wc
+readme: python-package-readme-test
 release: python-package-release
 releasetest: python-package-release-test
 serve: django-serve
@@ -64,10 +48,6 @@ test: django-test
 vm: vagrant-up
 vm-down: vagrant-suspend
 
-# Variables to configure defaults 
-COMMIT_MESSAGE="Update"
-PROJECT=project
-APP=app
 
 # Django
 django-db-clean-postgres:
@@ -75,6 +55,10 @@ django-db-clean-postgres:
 	-createdb $(PROJECT)-$(APP)
 django-db-clean-sqlite:
 	-rm -f $(PROJECT)-$(APP).sqlite3
+django-init:
+	-mkdir -p $(PROJECT)/$(APP)
+	-django-admin startproject $(PROJECT) .
+	-django-admin startapp $(APP) $(PROJECT)/$(APP)
 django-migrate:
 	python manage.py migrate
 django-migrations:
@@ -88,10 +72,6 @@ django-test:
 	python manage.py test
 django-shell:
 	python manage.py shell
-django-start:
-	-mkdir -p $(PROJECT)/$(APP)
-	-django-admin startproject $(PROJECT) .
-	-django-admin startapp $(APP) $(PROJECT)/$(APP)
 django-static:
 	python manage.py collectstatic --noinput
 django-su:
@@ -106,7 +86,7 @@ git-checkout-branches:
 	-for i in $(REMOTE_BRANCHES) ; do \
         git checkout -t $$i ; done
 git-commit-auto-push:
-	git commit -a -m $(COMMIT_MESSAGE)
+	git commit -a -m $(COMMITMESSAGE)
 	$(MAKE) git-push
 git-commit-edit-push:
 	git commit -a
@@ -141,6 +121,11 @@ npm-init:
 	npm init
 npm-install:
 	npm install
+grunt-init:
+	npm install grunt
+	grunt-init Gruntfile
+grunt-serve:
+	grunt serve
 
 # Plone
 plone-heroku:
@@ -166,6 +151,9 @@ python-flake:
 python-package-check:
 	check-manifest
 	pyroma .
+python-pip-freeze:
+	bin/pip freeze | sort > $(DIR)/requirements.txt
+	mv -f $(DIR)/requirements.txt .
 python-pip-install:
 	bin/pip install -r requirements.txt
 python-virtualenv-create:
@@ -186,10 +174,17 @@ python-package-release:
 	python setup.py sdist --format=gztar,zip upload
 python-package-release-test:
 	python setup.py sdist --format=gztar,zip upload -r test
+python-package-test:
+	python setup.py test
 
 # Sphinx
 sphinx-start:
 	sphinx-quickstart -q -p "Python Project" -a "Alex Clark" -v 0.0.1 doc
+
+# Static
+static-serve:
+	@echo "\n\tServing HTTP on http://0.0.0.0:8000\n"
+	python -m SimpleHTTPServer
 
 # Vagrant
 vagrant-box-update:
@@ -199,7 +194,8 @@ vagrant-clean:
 vagrant-down:
 	vagrant suspend
 vagrant-init:
-	vagrant init ubuntu/trusty64; vagrant up --provider virtualbox
+	vagrant init ubuntu/trusty64
+	vagrant up --provider virtualbox
 vagrant-up:
 	vagrant up --provision
 
@@ -208,3 +204,6 @@ lorem:
 	@echo >> Professionally-maintain-frictionless-testing.rst
 	lorem --words 100 --randomize >> Professionally-maintain-frictionless-testing.rst
 	@echo >> Professionally-maintain-frictionless-testing.rst
+python-yapf:
+	-yapf -d *.py
+	-yapf -d $(PROJECT)/$(APP)/*.py
