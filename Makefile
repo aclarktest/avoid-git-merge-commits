@@ -201,9 +201,10 @@ vagrant-up:
 
 # avoid-git-merge-commits
 lorem:
-	@echo >> Professionally-maintain-frictionless-testing.rst
-	lorem --words 100 --randomize >> Professionally-maintain-frictionless-testing.rst
-	@echo >> Professionally-maintain-frictionless-testing.rst
+	@echo >> README.rst
+	lorem --words 100 --randomize >> README.rst
+	@echo >> README.rst
+	$(MAKE) commit
 python-yapf:
 	-yapf -d *.py
 	-yapf -d $(PROJECT)/$(APP)/*.py
